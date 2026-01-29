@@ -2,11 +2,19 @@ from rest_framework import serializers
 from product.models import Product, Category
 
 
+class CategorySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Category
+        fields = ["id", "title"]
+
+
 class ProductSerializer(serializers.ModelSerializer):
     categories_id = serializers.ListField(
         child=serializers.IntegerField(),
         write_only=True
     )
+
+    category = CategorySerializer(many=True, read_only=True)
 
     class Meta:
         model = Product
@@ -15,6 +23,7 @@ class ProductSerializer(serializers.ModelSerializer):
             "title",
             "price",
             "active",
+            "category",
             "categories_id",
         ]
 
