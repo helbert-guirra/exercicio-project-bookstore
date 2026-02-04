@@ -3,23 +3,19 @@ from product.models import Product, Category
 
 
 class ProductSerializer(serializers.ModelSerializer):
-    categories_id = serializers.ListField(
-        child=serializers.IntegerField(),
+    categories_id = serializers.PrimaryKeyRelatedField(
+        queryset=Category.objects.all(),
+        source='category',
+        many=True,
         write_only=True
     )
 
     class Meta:
         model = Product
-        fields = [
-            "id",
-            "title",
-            "price",
-            "active",
-            "categories_id",
-        ]
+        fields = ["id", "title", "price", "active", "categories_id"]
 
     def create(self, validated_data):
-        categories_id = validated_data.pop("categories_id")
+        categories = validated_data.pop("category")
         product = Product.objects.create(**validated_data)
-        product.category.set(categories_id)
+        product.category.set(categories)
         return product
