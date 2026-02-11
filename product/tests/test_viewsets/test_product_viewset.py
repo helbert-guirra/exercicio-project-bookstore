@@ -15,7 +15,7 @@ class TestProductViewSet(APITestCase):
 
     def setUp(self):
         self.user = UserFactory()
-        token = Token.objects.create(user=self.user)
+        Token.objects.create(user=self.user)
 
         self.product = ProductFactory(
             title="pro controller",
@@ -23,7 +23,7 @@ class TestProductViewSet(APITestCase):
         )
 
     def test_get_all_product(self):
-        token = Token.objects.get(user__username=self.user.username)
+        token = Token.objects.get(user=self.user)
         self.client.credentials(
             HTTP_AUTHORIZATION="Token " + token.key
         )
@@ -36,22 +36,31 @@ class TestProductViewSet(APITestCase):
 
         product_data = json.loads(response.content)
 
-        self.assertEqual(product_data[0]["title"], self.product.title)
-        self.assertEqual(float(product_data[0]["price"]), float(self.product.price))
-        self.assertEqual(product_data[0]["active"], self.product.active)
+        self.assertEqual(
+            product_data["results"][0]["title"],
+            self.product.title
+        )
+        self.assertEqual(
+        float(product_data["results"][0]["price"]),
+        float(self.product.price)
+        )
+        self.assertEqual(
+            product_data["results"][0]["active"],
+            self.product.active
+        )
 
     def test_create_product(self):
-        token = Token.objects.get(user__username=self.user.username)
+        token = Token.objects.get(user=self.user)
         self.client.credentials(
             HTTP_AUTHORIZATION="Token " + token.key
         )
 
-        self.category = CategoryFactory()
+        category = CategoryFactory()
 
         data = json.dumps({
             "title": "notebook",
             "price": 100,
-            "categories_id": [self.category.id]
+            "categories_id": [category.id]
         })
 
         response = self.client.post(
@@ -65,4 +74,4 @@ class TestProductViewSet(APITestCase):
         created_product = Product.objects.get(title="notebook")
 
         self.assertEqual(created_product.title, "notebook")
-        self.assertEqual(float(created_product.price), 100.0)
+        self.assertEqual(created_product.price, 100)
