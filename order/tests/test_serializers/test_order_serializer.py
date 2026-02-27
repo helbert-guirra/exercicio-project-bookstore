@@ -10,23 +10,13 @@ class TestOrderSerializer:
     def test_order_serializer(self):
         # Criar usuário
         user = User.objects.create_user(
-            username="testuser",
-            email="test@test.com",
-            password="testpass123"
+            username="testuser", email="test@test.com", password="testpass123"
         )
 
         # Criar categoria e produto
-        category = Category.objects.create(
-            title="Livros",
-            slug="livros",
-            active=True
-        )
+        category = Category.objects.create(title="Livros", slug="livros", active=True)
 
-        product = Product.objects.create(
-            title="Python Book",
-            price=50,
-            active=True
-        )
+        product = Product.objects.create(title="Python Book", price=50, active=True)
         product.category.add(category)
 
         # Criar pedido

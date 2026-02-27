@@ -6,9 +6,9 @@ class CategorySerializer(serializers.ModelSerializer):
     class Meta:
         model = Category
         fields = [
-            'id',  # ← ADICIONE isto
-            'title',
-            'slug',
-            'description',
-            'active',
+            "id",  # ← ADICIONE isto
+            "title",
+            "slug",
+            "description",
+            "active",
         ]
